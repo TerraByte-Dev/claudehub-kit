@@ -1,0 +1,6 @@
+# This repo is markdown and folders. The single .ps1 is an optional Windows scaffolder —
+# a convenience, not the product — so don't let it define the repo's language stats.
+*.ps1 linguist-detectable=false
+
+# One line-ending policy, so a cut from a Windows source does not ship a mixed tree.
+* text=auto eol=lf

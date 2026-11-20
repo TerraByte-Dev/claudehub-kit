@@ -1,0 +1,14 @@
+# Line endings are load-bearing. git on Windows converts LF to CRLF on checkout;
+# for an sh script that turns the shebang into "#!/bin/sh\r" and it stops running.
+
+* text=auto
+
+# Must stay LF - executed by sh (Git Bash)
+bin/secrets             text eol=lf
+bin/run-with-secrets    text eol=lf
+
+# Must stay CRLF - executed by cmd.exe
+*.cmd                   text eol=crlf
+
+# PowerShell 5.1 reads .ps1 as ANSI without a BOM, so these are ASCII-only.
+*.ps1                   text eol=crlf
