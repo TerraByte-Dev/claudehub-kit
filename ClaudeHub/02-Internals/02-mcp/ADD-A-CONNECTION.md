@@ -113,10 +113,11 @@ now **change or send** on their behalf.
 
 The Hub connection is not added from this playbook. It has its own room, `../07-hub/`, because
 it is set up by the Hub add-on (`../07-hub/hub-addon/AGENTS.md`): helper files from the Hub's
-Settings -> API page and the key window in step 6, the MCP server in step 7, the hook in step 8.
-Take its `claude mcp add-json` line from step 7, never from memory or a note. Its key sits in Windows Credential
-Locker, not in an environment variable or `~/.claude.json`. It **can change things**: hand off
-work, post updates, record wins. Log it that way, and Claude still only posts on the person's ok.
+Settings -> API page and `secrets add TB_HUB_TOKEN` in step 6, the MCP server in step 7, the
+hook in step 8. Take its `claude mcp add-json` line from step 7, never from memory or a note. Its
+key sits in secrets-kit as `TB_HUB_TOKEN`, handed to the helper by `run-with-secrets`, never in a
+saved environment variable or `~/.claude.json`. It **can change things**: hand off work, post
+updates, record wins. Log it that way, and Claude still only posts on the person's ok.
 Broken? `../07-hub/CONTEXT.md` has the fixes.
 
 ## A tool with its own API key (e.g. an AI or video service)

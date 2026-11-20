@@ -30,8 +30,9 @@ skipped): all of it.
 - **Step 5:** as written. They keep the Settings -> API tab open for step 6.
 - **Step 6:** as written. You fetch `hub-headers.mjs` and `hub.mjs` through the page's two
   **Download ... instead** links (Claude in Chrome, or they click), then stop using the browser.
-  You write `store-key.ps1` and open it in its own Windows PowerShell 5.1 window; they paste the
-  key there. The key never enters this chat.
+  Step 6.2 only confirms secrets-kit (installed by the bootstrap's phase 3; if not, its files
+  are `../../03-Clinic/secrets-kit`). They open their own new terminal and run
+  `secrets add TB_HUB_TOKEN`, answering `n` at Guarded. The key never enters this chat.
 - **Step 7:** you add the `terrabyte-hub` server yourself; they copy nothing. If
   `../01-harness/WHERE-THINGS-LIVE.md` (or this session's `claude --version`) says desktop app
   only, use the add-on's desktop-only path.
@@ -63,7 +64,7 @@ skipped): all of it.
 - **Step 15:** log in `../CHANGELOG.md` (one line per change, with its undo) and replace the
   `Hub: NOT CONNECTED YET` line with `Hub: connected YYYY-MM-DD as <their Hub name>, key expires
   YYYY-MM-DD`. Fill the `Hub` row in `../01-harness/WHERE-THINGS-LIVE.md`; add `terrabyte-hub`
-  to `../02-mcp/INVENTORY.md` (logs in with: key in Windows Credential Locker; can change
+  to `../02-mcp/INVENTORY.md` (logs in with: `TB_HUB_TOKEN` in secrets-kit; can change
   things: hands off work, posts updates, records wins). Their next session:
   `Build my first desk.` in `ClaudeHub\01-AIDesktop\02-Work`, unless they've built one.
 
@@ -71,15 +72,15 @@ skipped): all of it.
 | They say… | Do |
 |-----------|----|
 | "The Hub stopped working", "no Hub tools", "the hook says nothing" | the Troubleshooting table at the end of `hub-addon/AGENTS.md` |
-| "My Hub key expired", 401 errors | they revoke the old key on Settings -> API; you redo add-on step 6's key window (they click **New token** and paste there). Nothing else changes. Log it |
-| "I pasted my key in the chat" | don't use it; they revoke it on Settings -> API; you redo add-on step 6's key window |
+| "My Hub key expired", 401 errors | they click **New token** on Settings -> API, run `secrets rotate TB_HUB_TOKEN` in their own new terminal and paste it there, then revoke the old key. Nothing else changes. Log it |
+| "I pasted my key in the chat" | don't use it; they revoke it on Settings -> API, click **New token**, and run `secrets rotate TB_HUB_TOKEN` in their own terminal |
 | "Take the Hub off this PC" | the Undo section of `hub-addon/AGENTS.md`; log it |
 | "Tate sent a newer add-on" | replace `hub-addon/` with the new copy, compare its `RULE-FALLBACK.md` block with the one in `~/.claude/CLAUDE.md` (step 9 above), log it |
 
 ## Conventions
 - Don't edit `hub-addon/`. It comes from Tate; a fix goes to him (a Hub handoff), not here.
-- The Hub key never appears in a file, the chat, a log, or a command you run. Checks print the
-  user name `tb-hub` only.
+- The Hub key never appears in a file, the chat, a log, or a command you run. Checks print
+  names only (`secrets list`), never a value.
 - Crew members see their own spaces and the shared Crew space; founders see everything in
   those spaces, numbers and memory included. Say so once, the first time.
 - Windows only, like the rest of the kit. On a Mac the add-on still works on its own: open

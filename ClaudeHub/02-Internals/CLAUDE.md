@@ -31,7 +31,7 @@ So a change has four steps, always in this order: **back up, change, prove, log.
 4. **Log it** in `CHANGELOG.md`: one line saying what changed, why, and how to undo it.
 
 Changes made through a Claude Code command (`claude mcp add`, `claude mcp remove`, `/plugin`)
-or by the Hub add-on's own steps (`07-hub/hub-addon/AGENTS.md`: the key window in step 6,
+or by the Hub add-on's own steps (`07-hub/hub-addon/AGENTS.md`: `secrets add TB_HUB_TOKEN` in step 6,
 the MCP server in step 7, `hub.mjs install` in step 8) skip step 1: the undo is
 the reverse step, written in the log. Never copy `~/.claude.json`,
 `~/.claude/.credentials.json`, `~/.terrabyte/`, or `~/.claude/plugins/` into this folder.

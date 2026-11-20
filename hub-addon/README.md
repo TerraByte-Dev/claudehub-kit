@@ -33,11 +33,12 @@ It plugs into the Claude setup you already have. Nothing you have gets replaced.
    > Read hub-addon/AGENTS.md and connect me to the Hub.
 
 Claude walks you through it. You'll sign in to the Hub and, if Claude asks, click two download
-links on the Hub page. Then Claude opens a window for you: you paste your key there, and nowhere
-else. Claude does the rest. Click **Allow** when it asks to run something.
+links on the Hub page. Then you open a new terminal yourself and run `secrets add TB_HUB_TOKEN`
+(Claude installs secrets-kit first if you don't have it): paste your key at its hidden prompt,
+and nowhere else. Claude does the rest. Click **Allow** when it asks to run something.
 
-**One rule:** your Hub key goes only into the window Claude opens for it. Never paste it
-into the chat. If you do by accident, Claude tells you how to cancel it and make a new one.
+**One rule:** your Hub key goes only into `secrets add TB_HUB_TOKEN`, in your own terminal.
+Never paste it into the chat. If you do by accident, Claude tells you how to cancel it and make a new one.
 
 Claude never posts, sends, or approves anything without your ok in the chat. Money, won/lost
 and approvals are always your click in the Hub.

@@ -28,8 +28,8 @@ terminal). For the Hub part, your `@terrabytesolutions.com` sign-in from Tate.
 3. **Paste the prompt in [`PROMPT.md`](PROMPT.md)** and press Enter.
 
 Then click **Allow** when Claude asks to run a command (expect about 25; that's normal), answer
-a few questions, and paste your Hub key into the window Claude opens for it (never into the
-chat). At the end you restart Claude once and paste one line: `Finish my TerraByte setup.`
+a few questions, and store your Hub key yourself: open a new terminal, run
+`secrets add TB_HUB_TOKEN` and paste it at the hidden prompt (never into the chat). At the end you restart Claude once and paste one line: `Finish my TerraByte setup.`
 That last part takes about 10 minutes.
 
 Stopped halfway? Paste the prompt again; it picks up where it left off.

@@ -15,10 +15,12 @@ Names used below. Write them out in full whenever the person will see or paste t
 
 ## Rules for the whole run (they beat every file this one sends you to)
 
-1. **The Hub key is never yours.** Don't ask for it, read it, print it, or store it. They paste it
-   only into the window the Hub add-on's step 6 opens. Pasted into the chat by mistake: it has
-   leaked; they revoke it on the Hub's Settings -> API page and you redo that window. The Hub
-   key never goes into secrets-kit either.
+1. **The Hub key is never yours.** Don't ask for it, read it, print it, or store it. They store
+   it themselves: `secrets add TB_HUB_TOKEN` in a new terminal they open (the Hub add-on's step
+   6), pasting it at secrets-kit's hidden prompt. Pasted into the chat by mistake: it has
+   leaked; they revoke it on the Hub's Settings -> API page, click **New token**, and run
+   `secrets rotate TB_HUB_TOKEN` (or `secrets add TB_HUB_TOKEN` if it was never stored) in their
+   own terminal.
 2. **Never move, rename or delete a file or folder of theirs.** You copy and add. The only
    existing files you change are the ones the upgrade plan names, each backed up first and
    changed on their yes. Your own files in `<STAGE>` are yours.
@@ -34,9 +36,9 @@ Names used below. Write them out in full whenever the person will see or paste t
    and that clicking Allow is expected.
 
 Before phase 0, tell them in three lines what's coming: a read-only look at their PC, then their
-workspace set up (a short interview included), secrets-kit, and the Hub (they sign in and paste
-one key into a window you open). About an hour, most of it you working, then one restart and
-a 10-minute finish. They can stop any time; pasting the prompt again resumes.
+workspace set up (a short interview included), secrets-kit, and the Hub (they sign in and store
+one key themselves with `secrets add TB_HUB_TOKEN`). About an hour, most of it you working, then
+one restart and a 10-minute finish. They can stop any time; pasting the prompt again resumes.
 
 ## 0. Look (read only)
 
@@ -178,8 +180,10 @@ powershell.exe -NoProfile -Command { $env:Path = [Environment]::GetEnvironmentVa
   update ("re-running the installer keeps every stored key"), and on yes run step 3 as above.
 - **Any other path** → a different `secrets` command runs first on PATH. Don't install over it,
   don't touch PATH: tell them the path in one line and record `secrets-kit: blocked by <path>`.
+  Phase 4 is then skipped too: the Hub key lives in secrets-kit.
 
-**Verify** (unless blocked): the same fresh-PATH process lists names only:
+**Verify** (unless blocked), before any key is stored: the same fresh-PATH process, which sees
+what a new terminal would, lists names only:
 
 ```powershell
 powershell.exe -NoProfile -Command { $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User'); (Get-Command secrets -ErrorAction Stop).Source; secrets list }
@@ -191,7 +195,7 @@ list is fine). Then teach them this, and nothing more:
 > To store a key: open a **new** terminal (Start menu, Terminal) and run `secrets add OPENAI_API_KEY`;
 > paste the key when it asks (it shows `*`). Claude then runs a tool with it like this:
 > `run-with-secrets --only OPENAI_API_KEY <command>`. Never paste a key into the chat. Your Hub
-> key doesn't go here; the Hub gets its own window next.
+> key goes here too, the same way, in the next part: `secrets add TB_HUB_TOKEN`.
 
 Record the result in `<STATE>`, tick phase 3.
 
@@ -200,20 +204,22 @@ Record the result in `<STATE>`, tick phase 3.
 Ask first: "Do you have a TerraByte Hub sign-in (your `@terrabytesolutions.com` email, from
 Tate's invite) and can you open that inbox?" **No** → skip this phase with one line: "Ask Tate
 for a Hub invite, then paste PROMPT.md again; it resumes." Record `hub: skipped (no account)`
-and go to phase 5. Node missing (they declined in phase 0) → skip the same way, with that reason.
+and go to phase 5. Node missing (they declined in phase 0), or secrets-kit blocked (phase 3) →
+skip the same way, with that reason.
 
 Otherwise read `<CH>\02-Internals\07-hub\CONTEXT.md` ("Connect me to the Hub.") and the add-on's
 `<CH>\02-Internals\07-hub\hub-addon\AGENTS.md`, its rules first, and run add-on **steps 4 to 10**
-as that CONTEXT changes them. Step 3 (Node) was phase 0; step 11 (secrets-kit) was phase 3.
+as that CONTEXT changes them. Step 3 (Node) was phase 0; step 6.2 (install secrets-kit) and
+step 11 (other keys) were phase 3.
 **Steps 12 to 15 don't run here**: the restart is phase 6 and the check, first task and log run
 in `FINISH.md` after it. Already connected (`node "$HOME/.terrabyte/hub.mjs" check` prints
 `Connected` in add-on step 4): do only steps 9 and 10. Upgrade route: `UPGRADE.md` step 8 says
 what to do when a Hub room already exists somewhere else.
 
 The person signs in (step 5), you fetch the two helper files (step 6.1, Claude in Chrome if you
-have it, else they click two links), they paste the key into the PowerShell window (step 6.2), you
-add the `terrabyte-hub` connection (7), run `hub.mjs install` and `check` (8), check the crew
-rule (9) and make the Hub room (10).
+have it, else they click two links), they open their own new terminal and store the key with
+`secrets add TB_HUB_TOKEN` (step 6.3, Guarded `n`), you add the `terrabyte-hub` connection (7),
+run `hub.mjs install` and `check` (8), check the crew rule (9) and make the Hub room (10).
 
 Record in `<STATE>` what the add-on's step 12 lists: the Hub room path, which `CLAUDE.md` holds
 the crew rule, desktop-only or terminal, every backup made (paths), and the change-log lines

@@ -122,18 +122,17 @@ TerraByte Solutions is Tate's company; I'm on its crew.
 A secret is a password, API key, or token.
 
 - Never write one into any file (including `.env`), a log, Hub text, or back to me on screen.
-  My Hub key lives in Windows Credential Locker (step 6 of the Hub add-on put it there); you never
-  touch it. Other keys live in Windows Credential Manager through secrets-kit
-  (`{{SECRETS_KIT_PATH}}`): I run `secrets add NAME` in my own terminal and you run the command
-  with `run-with-secrets`.
+  My keys live in Windows Credential Manager through secrets-kit (`{{SECRETS_KIT_PATH}}`): I run
+  `secrets add NAME` in my own terminal and you run the command with `run-with-secrets`. My Hub
+  key is one of them, `TB_HUB_TOKEN`; only the Hub connection uses it, and you never touch it.
 - Keys are mine. Never use anyone else's, and never share mine.
 - Never ask me to paste one into the chat; the chat is saved to disk.
 - secrets-kit not installed yet? Install it by `{{SECRETS_KIT_PATH}}\AGENTS.md` the first time
   a key is needed. That folder is a full copy: never clone or download it. This section is
   my secrets-kit Secrets block, so skip its step 8.
 - If you spot a real key in a file or in something I pasted, tell me right away and tell me
-  how to replace it. A pasted Hub key: I revoke it on the Hub's Settings -> API page, and you
-  redo step 6 of `{{INTERNALS_PATH}}\07-hub\hub-addon\AGENTS.md` for a new one.
+  how to replace it. A pasted Hub key: I revoke it on the Hub's Settings -> API page, click
+  **New token**, and run `secrets rotate TB_HUB_TOKEN` in my own terminal.
 
 ### How you work
 

@@ -66,8 +66,8 @@ Same files, same setup.
   the Hub.
 - **Keys go in secrets-kit, never in a file or the chat.** In a new terminal:
   `secrets add OPENAI_API_KEY` (paste when it asks). Claude runs tools with
-  `run-with-secrets --only OPENAI_API_KEY <command>`. Your Hub key is separate: it lives in its
-  own window's store.
+  `run-with-secrets --only OPENAI_API_KEY <command>`. Your Hub key lives there too, as
+  `TB_HUB_TOKEN`; a new one goes in with `secrets rotate TB_HUB_TOKEN`.
 - **`/research <anything>`** works from any folder. You get a short answer with sources and an
   honest confidence level. **`/deep-research`** is the heavy version (on Pro, switch on
   **Dynamic workflows** in `/config` first).

@@ -43,9 +43,9 @@ Read this file, then the one room the job belongs to. Don't read the whole tree 
   don't.
 - **Keep the map true.** Add, rename, or retire a room → fix this table and its `CONTEXT.md` in
   the same turn. Retire means move aside, never delete.
-- **No secrets in files.** No passwords, keys, or tokens in anything under this folder. The Hub
-  key lives in Windows Credential Locker (step 6 of the Hub add-on puts it there); other keys
-  live in Credential Manager via secrets-kit.
+- **No secrets in files.** No passwords, keys, or tokens in anything under this folder. Keys,
+  the Hub key (`TB_HUB_TOKEN`) included, live in Credential Manager via secrets-kit; the person
+  stores each one with `secrets add NAME` in their own terminal.
 - **Claude never sends, posts, approves, or contacts anyone on its own.** The person posts and
   sends from their own accounts. In the Hub, Claude drafts hand-backs and updates and posts
   them only after the person's ok in the chat. Hub won/lost and anything about money are their

@@ -37,7 +37,7 @@ Filled in by setup. Update it when something moves.
 | Auto memory | `~/.claude/projects/<folder-name>/memory/` | Notes Claude keeps for itself per project. See them with `/memory`. |
 | Hub helper | `~/.terrabyte/hub.mjs`, `~/.terrabyte/hub-headers.mjs` | Downloaded from the Hub's Settings -> API page in step 6 of the Hub add-on (`07-hub/hub-addon/AGENTS.md`). `node "$HOME/.terrabyte/hub.mjs" check` tests the connection. Hold no key. |
 | Hub files | `~/.terrabyte/files/` | Files fetched from the Hub land here. A download area, not storage. |
-| Hub key | Windows Credential Locker, resource `terrabyte-hub`, user `tb-hub` | The Hub add-on's key window (step 6) stores it. Never read, print or copy it. New key: revoke the old one on the Hub's Settings -> API page, then redo add-on step 6. |
+| Hub key | secrets-kit (Windows Credential Manager), name `TB_HUB_TOKEN` | The person stores it with `secrets add TB_HUB_TOKEN` in their own terminal (Hub add-on step 6); the `terrabyte-hub` MCP server gets it through `run-with-secrets --only TB_HUB_TOKEN`. Never read, print or copy it. New key: **New token** on the Hub's Settings -> API page, `secrets rotate TB_HUB_TOKEN`, then revoke the old one. |
 
 Per project, inside the project folder:
 

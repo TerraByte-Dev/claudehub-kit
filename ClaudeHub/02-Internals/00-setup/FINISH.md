@@ -44,8 +44,9 @@ and go to step 5.
 
 Otherwise run add-on step 13 (`../07-hub/hub-addon/AGENTS.md`, rules first): run
 `node "$HOME/.terrabyte/hub.mjs" check`, then call `hub_whoami`. Both name them; ask "is that
-you?". Tell them when the key runs out (`token_expires_in_days`), and once, plainly, who can see
-their Hub spaces (step 13's last paragraph). No `hub_*` tools at all: the add-on's
+you?". Tell them when the key runs out (`token_expires_in_days`; a new one is **New token** on
+Settings -> API, then `secrets rotate TB_HUB_TOKEN` in their own terminal), and once, plainly,
+who can see their Hub spaces (step 13's last paragraph). No `hub_*` tools at all: the add-on's
 Troubleshooting table, row "No Hub tools".
 
 ## 4. What's waiting, and the first task

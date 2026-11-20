@@ -6,20 +6,24 @@ next step until it passes. Steps marked **Mac/Linux** give the Verify to use the
 
 Talk to them like a friend who knows computers: exact clicks, exact paths, define a term the
 first time. Before step 1, tell them in two lines what's coming: a quick look at their PC, a Hub
-sign-in, one key they paste into a window you open for them, one restart of Claude, then their
-first Hub task together. About 15 minutes; they can stop any time.
+sign-in, one key they store themselves with `secrets add TB_HUB_TOKEN` in their own new
+terminal, one restart of Claude, then their first Hub task together. About 15 minutes; they can
+stop any time.
 
 ## Rules for the whole task
 
 1. **The Hub key is never yours.** Don't ask for it, read it, print it, or write it anywhere.
-   The person pastes it only into the window step 6 opens for them. If they paste a key into this
-   chat, stop and tell them: it has leaked; on Settings -> API, revoke that key, make a new
-   one, and redo step 6. Never use the pasted one. Once the two helper files are downloaded (end
+   The person stores it themselves: `secrets add TB_HUB_TOKEN` in a new terminal they open
+   (step 6), pasting it at secrets-kit's hidden prompt. If they paste a key into this chat, stop
+   and tell them: it has leaked; on Settings -> API, revoke that key, click **New token**, and
+   run `secrets rotate TB_HUB_TOKEN` in their own terminal (`secrets add TB_HUB_TOKEN` if it
+   was never stored). Never use the pasted one. Once the two helper files are downloaded (end
    of step 6.1), never look at or read the Hub page again; the key appears there next.
    **Never run, pipe or echo `~/.terrabyte/hub-headers.mjs`, or the `headersHelper` command in
-   `~/.claude.json`. Running it prints the key.** Test the connection only with
+   `~/.claude.json`, and never run `run-with-secrets --only TB_HUB_TOKEN` on anything else.
+   Running them prints the key.** Test the connection only with
    `node "$HOME/.terrabyte/hub.mjs" check`, `claude mcp get terrabyte-hub`, or step 6's
-   user-name-only check.
+   names-only `secrets list`.
 2. **The helper files come from the Hub.** `hub-headers.mjs` and `hub.mjs` are downloaded from
    the Settings -> API page (step 6), never typed from memory. On Windows, the person never
    copies code from the page; on Mac/Linux they run the page's one Mac/Linux block themselves
@@ -131,44 +135,48 @@ Tell the person:
    `True`: don't read either file. Delete only the two copies in `.terrabyte` (yours), and ask
    the person to download fresh ones from the page. `False`:
    read both: code only, no key. **Stop using the browser now.** The key appears on that page next, and you must never see it.
-2. **The key, in a window you don't see.** Write this to `%USERPROFILE%\.terrabyte\store-key.ps1`,
-   exactly:
+2. **secrets-kit first.** The Hub key lives in secrets-kit, the same tool as every other key.
+   Check for it in a process that reads PATH fresh from the registry, as a new terminal would:
 
    ```powershell
-   [void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]
-   $v = New-Object Windows.Security.Credentials.PasswordVault
-   Write-Host 'On the Hub page: New token (Read and write), copy the key, paste it here, press Enter.'
-   while ($true) {
-     $k = [Net.NetworkCredential]::new('', (Read-Host 'Hub key' -AsSecureString)).Password.Trim()
-     if ($k -match '^hub_[A-Za-z0-9]+_[A-Za-z0-9_-]+$') { break }
-     Write-Host 'That is not a Hub key (it starts with hub_). Copy it again and paste it.'
-   }
-   try { $v.Remove($v.Retrieve('terrabyte-hub','tb-hub')) } catch {}
-   $v.Add((New-Object Windows.Security.Credentials.PasswordCredential('terrabyte-hub','tb-hub',$k)))
-   $c = $v.Retrieve('terrabyte-hub','tb-hub'); $c.RetrievePassword()
-   if ($c.Password -eq $k) { Write-Host 'Saved. Close this window and go back to Claude.' } else { Write-Host 'NOT saved. Tell Claude.' }
-   Remove-Variable k, c -ErrorAction SilentlyContinue
+   powershell.exe -NoProfile -Command { $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User'); $c = Get-Command secrets -ErrorAction SilentlyContinue; if ($c) { $c.Source } else { 'not installed' } }
    ```
 
-   Open it in its own Windows PowerShell 5.1 window (`powershell.exe`, never `pwsh`):
+   - A path under `%LOCALAPPDATA%\secrets-kit\bin`: installed. Go on to 6.3.
+   - `not installed`: install it now. The files are the `secrets-kit` folder in this folder
+     (the add-on zip), or in a ClaudeHub kit `03-Clinic\secrets-kit`, or
+     `%USERPROFILE%\TerraByte-Kit\secrets-kit`. Follow that folder's `AGENTS.md`, rules first,
+     steps 1 to 4 only (its step 2 is done: never clone). Its keys steps belong to step 11 here.
+   - Any other path: a different `secrets` runs first on PATH. Don't install over it and don't
+     touch PATH: show them the path and stop here until it's resolved.
 
-   ```powershell
-   Start-Process powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-File',"$env:USERPROFILE\.terrabyte\store-key.ps1"
-   ```
+   Run the check again; it must print the `%LOCALAPPDATA%\secrets-kit\bin\secrets.cmd` path.
+3. **The key, in their own terminal.** Tell them, in these words or close:
 
-   Tell them: "A new PowerShell window just opened (dark or blue; check the taskbar if you
-   don't see it). On the Hub page click **New token** (Read and write), copy the key, paste it
-   into that window (it shows `*` for each character), press Enter, and tell me when it says
-   Saved. Never paste the key here." Wait. Then delete `store-key.ps1`.
+   > Open a **new** terminal yourself: Start menu, type **Terminal** (or PowerShell), Enter.
+   > Not this chat, and not a terminal tab inside VS Code or Cursor. Run
+   > `secrets add TB_HUB_TOKEN`. On the Hub page click **New token** (Read and write), copy the
+   > key, paste it at the prompt (it shows `*` for each character), press Enter. Five optional
+   > questions follow: Enter skips any of them, or type `TerraByte Hub` for the first two and
+   > `https://hub.terrabytesolutions.com/settings/api` for "Rotate at". At **Guarded**, answer
+   > `n` (Enter does too): a guarded key pops a dialog every time Claude connects, and the
+   > connection times out waiting for it. If it says `secrets` is not recognized, run
+   > `& "$env:LOCALAPPDATA\secrets-kit\bin\secrets.cmd" add TB_HUB_TOKEN` instead.
+   > Tell me when it says stored. Never paste the key here.
 
-**Verify:** both are true. The second prints the user name only, never the key:
+   Wait. Don't run `secrets add` for them, pipe anything into it, or use Claude Code's `!`
+   prefix for it; the hidden prompt needs their own terminal.
+
+**Verify:** both are true. The second prints names only, never a value:
 
 ```powershell
 Test-Path "$HOME\.terrabyte\hub-headers.mjs"
-powershell -NoProfile -Command "[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]; (New-Object Windows.Security.Credentials.PasswordVault).FindAllByResource('terrabyte-hub') | % UserName"
+& "$env:LOCALAPPDATA\secrets-kit\bin\secrets.cmd" list
 ```
 
-It should print `tb-hub`. `Element not found` means the key wasn't saved: open the window again.
+`TB_HUB_TOKEN` shows `set` and is not marked `[guarded]`. Missing: they didn't finish, or typed
+another name; they run `secrets add TB_HUB_TOKEN` again (exact name, capitals). Guarded: see
+Troubleshooting.
 
 **Mac/Linux:** the Settings -> API page has a Mac/Linux tab with one block. Have the person run
 that block in Terminal; it does steps 6 and 7 and ends with `Saved.`. Ask them for that line,
@@ -180,21 +188,26 @@ Add an MCP server named `terrabyte-hub` at **user** scope with this config, wher
 their real profile folder with forward slashes:
 
 ```json
-{"type":"http","url":"https://hub.terrabytesolutions.com/api/mcp","headersHelper":"node \"C:/Users/<them>/.terrabyte/hub-headers.mjs\""}
+{"type":"http","url":"https://hub.terrabytesolutions.com/api/mcp","headersHelper":"\"C:/Users/<them>/AppData/Local/secrets-kit/bin/run-with-secrets.cmd\" --only TB_HUB_TOKEN node \"C:/Users/<them>/.terrabyte/hub-headers.mjs\""}
 ```
+
+`run-with-secrets` hands the helper only `TB_HUB_TOKEN`, as an environment variable, and prints
+nothing but names, on stderr, so the header JSON on stdout stays clean. Its path is absolute
+because a fresh install's PATH may not have reached the app yet.
 
 - **`claude` found:** run `claude mcp add-json terrabyte-hub '<that json>' --scope user`. Use
   whatever quoting your shell needs; from PowerShell 5.1 go through `cmd /c`, since PowerShell
   mangles inner quotes. Says it **already exists**: `claude mcp get terrabyte-hub`; if it shows
-  user scope and that url, it's done, otherwise `claude mcp remove terrabyte-hub --scope user`
-  and add it again.
+  user scope, that url and that `run-with-secrets` helper, it's done, otherwise
+  `claude mcp remove terrabyte-hub --scope user` and add it again.
 - **Desktop app only** (no `claude`): back up `~/.claude.json` to `~/.claude.json.bak-YYYYMMDD`
   (a file copy; don't read it). With a short `node` script: read it, set
   `mcpServers["terrabyte-hub"]` to that object (create `mcpServers` if missing), write it back,
   print only `ok`. Touch nothing else. The running app rewrites this file too, so do it in one
   quick read-modify-write. If the entry later vanishes, see Troubleshooting ("No Hub tools").
 
-Check the JSON parses and that the helper path exists. Never run the helper (rule 1).
+Check the JSON parses and that both paths in the helper exist (`run-with-secrets.cmd` and
+`hub-headers.mjs`). Never run the helper (rule 1).
 
 **Verify:** `claude mcp get terrabyte-hub` shows it at user scope. Desktop-only: the names-only
 command in rule 8 lists `terrabyte-hub`.
@@ -225,6 +238,7 @@ node "$HOME/.terrabyte/hub.mjs" check
 If you installed Node in step 3, your shell has the old PATH and `check` fails with
 `the headers helper failed` even though the key is fine. Run it with Node on PATH instead:
 `$env:Path = "C:\Program Files\nodejs;$env:Path"; node "$HOME/.terrabyte/hub.mjs" check`.
+Any other `the headers helper failed`: redo step 6's Verify (`TB_HUB_TOKEN` set, not guarded).
 
 It prints `Connected to ... as "<their name>"`. Ask them: is that your name? Also confirm
 `~/.claude/settings.json` still parses as JSON.
@@ -261,15 +275,15 @@ If their root CLAUDE.md has a routing table, show them one new row pointing at t
 
 **Verify:** the room's `CONTEXT.md` exists and matches the template.
 
-## 11. secrets-kit (optional)
+## 11. Other keys in secrets-kit (optional)
 
-Ask: "Do you keep other API keys (for example an OpenAI key, or a key for an app you use) in
-`.env` files or saved settings?" The Hub key doesn't count; step 6 already stored it.
+secrets-kit is installed (step 6). Ask: "Do you keep other API keys (for example an OpenAI key,
+or a key for an app you use) in `.env` files or saved settings?" The Hub key doesn't count; step
+6 already stored it.
 
 - No: skip this step.
-- Yes: follow `secrets-kit/AGENTS.md` in this folder, all of it. In its step 2, this bundled
-  `secrets-kit` folder counts as the files: skip the clone and run the installer from here.
-  In its step 7, a `.env` that a tool of theirs still reads stays where it is for now: don't
+- Yes: follow the same `secrets-kit/AGENTS.md` as step 6, rules first, steps 5 to 9 (the install
+  is done). In its step 7, a `.env` that a tool of theirs still reads stays where it is for now: don't
   ask them to delete it in this session. Tell them in one line to switch that tool to
   `run-with-secrets --only <NAME>` first, and to delete the `.env` themselves after that works.
 
@@ -352,17 +366,18 @@ yourself).
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| The key window (step 6) errors on `PasswordVault` or `Windows.Security` | It opened in PowerShell 7 (`pwsh`) | Close it and open it again with step 6's `Start-Process powershell.exe` line (Windows PowerShell 5.1, never `pwsh`). Write `store-key.ps1` again first if you already deleted it. |
+| `secrets` is not recognized in their terminal (step 6) | A VS Code or Cursor tab, or a terminal opened before the install, has the old PATH | They run it by full path: `& "$env:LOCALAPPDATA\secrets-kit\bin\secrets.cmd" add TB_HUB_TOKEN` (cmd: `"%LOCALAPPDATA%\secrets-kit\bin\secrets.cmd" add TB_HUB_TOKEN`). |
+| A **Release guarded keys?** dialog naming `TB_HUB_TOKEN`, or `/mcp` shows `terrabyte-hub` timing out | They answered `y` at Guarded in step 6 | They open `%LOCALAPPDATA%\secrets-kit\KEYS.md` in Notepad, change `yes` to `-` in the last column of the `TB_HUB_TOKEN` row, and save. You never edit it (secrets-kit's rules). |
 | `'claude' is not recognized` when adding the server | Desktop app only, no terminal Claude | Step 7, desktop-only path. Don't install the terminal version unasked. |
 | `claude mcp add-json` says `terrabyte-hub` already exists | An earlier, partial setup | Step 7: `claude mcp get terrabyte-hub`; remove and re-add only if it's wrong. |
 | Two-factor code lost (new or lost phone) | The authenticator app was on the old phone | Message Tate. Don't try to get around the Hub sign-in. |
 | Hub sign-in code never arrives | Email routing or Access list | Check spam, wait five minutes, then message Tate; he can add their personal email to Access. |
 | Hook prints nothing at session start | Nothing waiting, or the hook isn't installed | Run `node "$HOME/.terrabyte/hub.mjs" check`. If it connects, nothing was waiting. If `~/.claude/settings.json` has no SessionStart entry running `hub.mjs`, redo step 8 (`hub.mjs install`). Hooks run only at the start of a new session. |
-| `No Hub token found` | The key window (step 6) didn't finish, or ran as another Windows user | Redo step 6's key window, with them signed in to Windows as themselves. Step 6's Verify should print `tb-hub`. Never run the headers helper to test it (rule 1). |
+| `No Hub token found`, or `the headers helper failed` with Node fine | `TB_HUB_TOKEN` isn't stored (step 6 didn't finish, another name was typed, or another Windows user ran it) | Step 6's Verify: `secrets list` must show `TB_HUB_TOKEN` `set`. Not there: they run `secrets add TB_HUB_TOKEN` in a new terminal, signed in to Windows as themselves, and paste a fresh key from **New token**. Never run the headers helper to test it (rule 1). |
 | `the headers helper failed` right after a Node install | Old PATH in your shell, not a bad key | Step 8's Verify: put Node on PATH in the same command, or have them run `check` in a new window. Don't send them back to step 6 for this. |
-| Key expired or about to (`hub_whoami` `token_expires_in_days` near 0), or 401 errors | Keys have a lifetime | They revoke the old key on Settings -> API; you redo step 6's key window (they click **New token** and paste there). Helper files, MCP server and hook stay as they are. |
+| Key expired or about to (`hub_whoami` `token_expires_in_days` near 0), or 401 errors | Keys have a lifetime | On Settings -> API they click **New token**, then in their own new terminal run `secrets rotate TB_HUB_TOKEN` and paste it; then they revoke the old key there. Helper files, MCP server and hook stay as they are. |
 | No Hub tools (`hub_*`) in the new session | MCP didn't load | Type `/mcp` to see `terrabyte-hub`'s status. Failed: is `node -v` 18+ in a new terminal? If Node was just installed, quit the Claude app fully and reopen. Still failing: terminal users redo step 7 (`claude mcp get terrabyte-hub`; re-add if it's wrong). Desktop-only: check the names-only command (rule 8) still lists `terrabyte-hub`; if it's gone, the app overwrote the file, so redo the step 7 desktop path with the Claude app fully quit (they run your node script from a PowerShell window), then reopen it. Never run the headers helper to test (rule 1). |
-| Person pasted the key in chat | Leaked to the chat log | Don't use it. They revoke it on Settings -> API; you redo step 6's key window for a new one. |
+| Person pasted the key in chat | Leaked to the chat log | Don't use it. They revoke it on Settings -> API, click **New token**, and run `secrets rotate TB_HUB_TOKEN` in their own terminal (`secrets add TB_HUB_TOKEN` if it was never stored). |
 | `node` not found right after installing it | Old PATH in this shell | Use `& "C:\Program Files\nodejs\node.exe"` for now; new windows will find it. |
 
 ## Undo (if they want it out)
@@ -372,6 +387,7 @@ yourself).
 - Hook and Read rule: remove the SessionStart entry that runs `hub.mjs` and the
   `~/.terrabyte/files/**` Read rule from `~/.claude/settings.json`, or restore the dated
   `settings.json.bak-YYYYMMDD` from step 8 if nothing else changed since.
-- Key: revoke it on the Hub's Settings -> API page, then Control Panel -> Credential Manager -> Web Credentials ->
-  remove `terrabyte-hub`.
+- Key: revoke it on the Hub's Settings -> API page, then they run `secrets rm TB_HUB_TOKEN` in
+  their own terminal. A setup from before secrets-kit may also have a `terrabyte-hub` entry
+  under Control Panel -> Credential Manager -> Web Credentials; they remove it there.
 - Files: delete `~/.terrabyte`, the Hub room folder, and the `## TerraByte Hub` block in CLAUDE.md.
