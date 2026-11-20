@@ -188,7 +188,7 @@ Add an MCP server named `terrabyte-hub` at **user** scope with this config, wher
 their real profile folder with forward slashes:
 
 ```json
-{"type":"http","url":"https://hub.terrabytesolutions.com/api/mcp","headersHelper":"\"C:/Users/<them>/AppData/Local/secrets-kit/bin/run-with-secrets.cmd\" --only TB_HUB_TOKEN node \"C:/Users/<them>/.terrabyte/hub-headers.mjs\""}
+{"type":"http","url":"https://clients.terrabytesolutions.com/api/mcp","headersHelper":"\"C:/Users/<them>/AppData/Local/secrets-kit/bin/run-with-secrets.cmd\" --only TB_HUB_TOKEN node \"C:/Users/<them>/.terrabyte/hub-headers.mjs\""}
 ```
 
 `run-with-secrets` hands the helper only `TB_HUB_TOKEN`, as an environment variable, and prints
